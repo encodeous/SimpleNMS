@@ -1,9 +1,9 @@
-package me.theminecoder.minecraft.nmsproxy.proxy;
+package ca.encodeous.simplenms.proxy;
 
-import me.theminecoder.minecraft.nmsproxy.NMSProxy;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSField;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSMethod;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSStatic;
+import ca.encodeous.simplenms.annotations.NMSField;
+import ca.encodeous.simplenms.annotations.NMSMethod;
+import ca.encodeous.simplenms.NMSProxy;
+import ca.encodeous.simplenms.annotations.NMSStatic;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -22,12 +22,10 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
 
     private final Object handle;
     private final NMSProxyInvocationMapper invocationMapper;
-    private final NMSProxyProvider proxyProvider;
 
-    NMSProxyInvocationHandler(Object handle, NMSProxyInvocationMapper invocationMapper, NMSProxyProvider proxyProvider) {
+    NMSProxyInvocationHandler(Object handle, NMSProxyInvocationMapper invocationMapper) {
         this.handle = handle;
         this.invocationMapper = invocationMapper;
-        this.proxyProvider = proxyProvider;
     }
 
     @Override
@@ -41,7 +39,7 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
                 return this;
             }
 
-            return proxyProvider.getStaticNMSObject((Class<? extends NMSProxy>) proxy.getClass().getInterfaces()[0]);
+            return NMSCore.getStaticNMSObject((Class<? extends NMSProxy>) proxy.getClass().getInterfaces()[0]);
         }
 
         if(method.getName().equals("isProxyStatic")) {
@@ -77,7 +75,7 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
         if (method.getAnnotation(NMSField.class) == null || method.getDeclaringClass() == Object.class) {
             NMSMethod nmsMethodAnnotation = method.getAnnotation(NMSMethod.class);
 
-            Object[] fixedArgs = proxyProvider.unwrapArguments(args);
+            Object[] fixedArgs = NMSCore.unwrapArguments(args);
             Class[] fixedArgTypes = Arrays.stream(fixedArgs).map(Object::getClass).toArray(Class[]::new);
 
             Method nmsMethod = invocationMapper.findNMSMethod((Class<? extends NMSProxy>) proxy.getClass().getInterfaces()[0], method, nmsMethodAnnotation, fixedArgTypes);
@@ -94,7 +92,7 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
             }
 
             if (NMSProxy.class.isAssignableFrom(method.getReturnType())) {
-                returnObject = proxyProvider.getNMSObject((Class<? extends NMSProxy>) method.getReturnType(), returnObject);
+                returnObject = NMSCore.getNMSObject((Class<? extends NMSProxy>) method.getReturnType(), returnObject);
             }
 
             return returnObject;
@@ -111,7 +109,7 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
 
                 Object value = field.get(invokerObject);
                 if (NMSProxy.class.isAssignableFrom(method.getReturnType())) {
-                    value = proxyProvider.getNMSObject((Class<? extends NMSProxy>) method.getReturnType(), value);
+                    value = NMSCore.getNMSObject((Class<? extends NMSProxy>) method.getReturnType(), value);
                 }
                 return value;
             } else {
@@ -119,7 +117,7 @@ public class NMSProxyInvocationHandler implements InvocationHandler {
                     throw new IllegalArgumentException("Must only pass the new value to set!");
                 }
 
-                field.set(invokerObject, proxyProvider.unwrapArgument(args[0]));
+                field.set(invokerObject, NMSCore.unwrapArgument(args[0]));
                 return null;
             }
         }

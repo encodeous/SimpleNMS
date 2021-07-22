@@ -1,4 +1,4 @@
-package me.theminecoder.minecraft.nmsproxy.util;
+package ca.encodeous.simplenms.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

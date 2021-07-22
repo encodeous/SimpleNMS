@@ -1,13 +1,14 @@
-package me.theminecoder.minecraft.nmsproxy.proxy;
+package ca.encodeous.simplenms.proxy;
 
+import ca.encodeous.simplenms.annotations.NMSField;
+import ca.encodeous.simplenms.annotations.NMSMethod;
+import ca.encodeous.simplenms.annotations.NMSVersionName;
+import ca.encodeous.simplenms.util.ClassUtil;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
-import me.theminecoder.minecraft.nmsproxy.NMSProxy;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSField;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSMethod;
-import me.theminecoder.minecraft.nmsproxy.annotations.NMSVersionName;
+import ca.encodeous.simplenms.NMSProxy;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -15,9 +16,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static me.theminecoder.minecraft.nmsproxy.proxy.NMSProxyProvider.NMS_VERSION;
-import static me.theminecoder.minecraft.nmsproxy.util.ClassUtil.forEachClassPossibility;
 
 /**
  * @author theminecoder
@@ -42,7 +40,7 @@ public class NMSProxyInvocationMapper {
 
             if (proxyMethod.getDeclaringClass() != Object.class) {
                 for (NMSVersionName methodVersion : nmsMethodAnnotation.versionNames()) {
-                    if (methodVersion.version().equalsIgnoreCase(NMS_VERSION)) {
+                    if (methodVersion.version().equalsIgnoreCase(NMSProvider.NMS_VERSION)) {
                         methodName = methodVersion.name();
                         break;
                     }
@@ -53,7 +51,7 @@ public class NMSProxyInvocationMapper {
 
             AtomicReference<Method> methodSearchRef = new AtomicReference<>();
             String finalMethodName = methodName;
-            forEachClassPossibility(fixedArgTypes, (searchTypes) -> {
+            ClassUtil.forEachClassPossibility(fixedArgTypes, (searchTypes) -> {
                 Class searchClass = nmsClass;
                 do {
                     try {
@@ -88,7 +86,7 @@ public class NMSProxyInvocationMapper {
             String fieldName = proxyMethod.getName();
 
             for (NMSVersionName versionName : nmsFieldAnnotation.versionNames()) {
-                if (versionName.version().equalsIgnoreCase(NMS_VERSION)) {
+                if (versionName.version().equalsIgnoreCase(NMSProvider.NMS_VERSION)) {
                     fieldName = versionName.name();
                     break;
                 }
@@ -130,7 +128,7 @@ public class NMSProxyInvocationMapper {
 
         if (constructor == null) {
             AtomicReference<Constructor> constructerSearchRef = new AtomicReference<>();
-            forEachClassPossibility(fixedArgTypes, (searchTypes) -> {
+            ClassUtil.forEachClassPossibility(fixedArgTypes, (searchTypes) -> {
                 try {
                     constructerSearchRef.set(nmsClass.getDeclaredConstructor(searchTypes));
                     return true;

@@ -1,4 +1,7 @@
-package me.theminecoder.minecraft.nmsproxy;
+package ca.encodeous.simplenms;
+
+import ca.encodeous.simplenms.proxy.NMSCore;
+import ca.encodeous.simplenms.proxy.NMSProvider;
 
 /**
  * @author theminecoder
@@ -16,5 +19,4 @@ public interface NMSProxy {
     Object getProxyHandle();
 
     boolean isProxyStatic();
-
 }

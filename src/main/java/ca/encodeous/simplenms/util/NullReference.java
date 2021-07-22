@@ -1,6 +1,6 @@
-package me.theminecoder.minecraft.nmsproxy.util;
+package ca.encodeous.simplenms.util;
 
-import me.theminecoder.minecraft.nmsproxy.NMSProxy;
+import ca.encodeous.simplenms.NMSProxy;
 
 /**
  * Utility class to define a type when calling a nms constructor with a null argument

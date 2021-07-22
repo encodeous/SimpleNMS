@@ -1,4 +1,4 @@
-# NMSProxy
+# SimpleNMS (Fork of NMSProxy)
 
 An easy way to work with nms, without the hassle of importing spigot.
 

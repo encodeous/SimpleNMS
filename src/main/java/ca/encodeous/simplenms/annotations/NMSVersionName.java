@@ -1,4 +1,4 @@
-package me.theminecoder.minecraft.nmsproxy.annotations;
+package ca.encodeous.simplenms.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
