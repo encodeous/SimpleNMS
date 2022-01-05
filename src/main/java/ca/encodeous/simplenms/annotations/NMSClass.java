@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 
 import static ca.encodeous.simplenms.proxy.NMSProvider.NMS_VERSION;
 
@@ -15,22 +16,26 @@ import static ca.encodeous.simplenms.proxy.NMSProvider.NMS_VERSION;
 public @interface NMSClass {
 
     public enum NMSType {
-        NMS("net.minecraft.server.%version%."),
-        CRAFTBUKKIT("org.bukkit.craftbukkit.%version%."),
+        NMS("net.minecraft.server.%version%.", "net.minecraft.", "net.minecraft.%version%."),
+        CRAFTBUKKIT("org.bukkit.craftbukkit.%version%.", "org.bukkit.craftbukkit."),
         OTHER("");
 
-        private final String prefix;
+        private final String[] prefixes;
 
-        NMSType(String prefix) {
-            this.prefix = prefix;
+        NMSType(String... prefix) {
+            this.prefixes = prefix;
         }
 
-        public String getPrefix() {
-            return prefix;
+        public String[] getPrefixes() {
+            return prefixes;
         }
 
-        public String getClassName(String className) {
-            return (prefix + className).replaceFirst("%version%", NMS_VERSION);
+        public String[] getClassNames(String className) {
+            ArrayList<String> prefixes = new ArrayList<>();
+            for(String pre : prefixes){
+                prefixes.add((pre + className).replaceFirst("%version%", NMS_VERSION));
+            }
+            return prefixes.toArray(new String[0]);
         }
     }
 

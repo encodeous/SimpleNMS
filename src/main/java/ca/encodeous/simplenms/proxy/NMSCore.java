@@ -9,6 +9,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NMSCore {
+    public static Class<?> getClass(String... names) {
+        for(int i = 0; i<names.length; i++) {
+            try {
+                return Class.forName(names[i]);
+            } catch (ClassNotFoundException ignored) {}
+        }
+        new ClassNotFoundException(Arrays.toString(names)).printStackTrace();
+        return null;
+    }
     public static void registerNMSClasses(Class<? extends NMSProxy> clazz) {
         if (NMSProvider.proxyToNMSClassMap.containsKey(clazz)) {
             return;
@@ -22,10 +31,9 @@ public class NMSCore {
         String className = nmsClassAnnotation.value();
 
         Class nmsClass;
-        try {
-            nmsClass = Class.forName(nmsClassAnnotation.type().getClassName(className)); //TODO Move %version% replacement here
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Class " + nmsClassAnnotation.type().getClassName(className) + " (" + nmsClassAnnotation.type() + ") was not found!");
+        nmsClass = getClass(nmsClassAnnotation.type().getClassNames(className)); //TODO Move %version% replacement here
+        if(nmsClass == null){
+            throw new IllegalStateException("Class proxy "+ clazz.getName() +" for " + className + " (" + nmsClassAnnotation.type() + ") was not found!");
         }
 
         NMSProvider.proxyToNMSClassMap.put(clazz, nmsClass);
