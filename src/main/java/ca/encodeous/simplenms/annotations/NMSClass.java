@@ -31,11 +31,11 @@ public @interface NMSClass {
         }
 
         public String[] getClassNames(String className) {
-            ArrayList<String> prefixes = new ArrayList<>();
+            ArrayList<String> results = new ArrayList<>();
             for(String pre : prefixes){
-                prefixes.add((pre + className).replaceFirst("%version%", NMS_VERSION));
+                results.add((pre + className).replaceFirst("%version%", NMS_VERSION));
             }
-            return prefixes.toArray(new String[0]);
+            return results.toArray(new String[0]);
         }
     }
 
